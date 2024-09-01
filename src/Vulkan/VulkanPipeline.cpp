@@ -5,8 +5,8 @@
 
 void VulkanPipeline::create (VulkanDevice& device, VulkanSwapChain& swapChain, VulkanRenderPass& renderPass)
 {
-    auto vertShaderCode = readFile ("shaders/vert.spv");
-    auto fragShaderCode = readFile ("shaders/frag.spv");
+    auto vertShaderCode = readFile ("shaders/spinning_circle.vert.spv");
+    auto fragShaderCode = readFile ("shaders/spinning_circle.frag.spv");
 
     VkShaderModule vertShaderModule = createShaderModule (vertShaderCode, device);
     VkShaderModule fragShaderModule = createShaderModule (fragShaderCode, device);

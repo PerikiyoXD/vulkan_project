@@ -71,17 +71,6 @@ void VulkanDevice::createLogicalDevice (VulkanSurface& surface)
     createInfo.enabledExtensionCount   = static_cast<uint32_t> (deviceExtensions.size ());
     createInfo.ppEnabledExtensionNames = deviceExtensions.data ();
 
-    // Optional: Check for validation layers (not needed in release)
-    // if (enableValidationLayers)
-    // {
-    //     createInfo.enabledLayerCount   = static_cast<uint32_t> (validationLayers.size ());
-    //     createInfo.ppEnabledLayerNames = validationLayers.data ();
-    // }
-    // else
-    // {
-    createInfo.enabledLayerCount = 0;
-    // }
-
     if (vkCreateDevice (physicalDevice, &createInfo, nullptr, &device) != VK_SUCCESS)
     {
         throw std::runtime_error ("Failed to create logical device!");

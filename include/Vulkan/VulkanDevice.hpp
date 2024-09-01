@@ -1,6 +1,7 @@
 #ifndef VULKAN_DEVICE_HPP
 #define VULKAN_DEVICE_HPP
 
+#include <vector>
 #include <vulkan/vulkan.h>
 #include "VulkanSurface.hpp"
 
@@ -21,6 +22,8 @@ class VulkanDevice
     VkDevice         device;
     VkQueue          graphicsQueue;
     VkQueue          presentQueue;
+
+    std::vector<const char*> deviceExtensions = {VK_KHR_SWAPCHAIN_EXTENSION_NAME};  // Add this line
 
     bool isDeviceSuitable (VkPhysicalDevice device, VulkanSurface& surface);
     bool checkDeviceExtensionSupport (VkPhysicalDevice device);
