@@ -3,8 +3,7 @@
 
 #include <vector>
 
-bool
-isDeviceSuitable (VkPhysicalDevice device, VkSurfaceKHR surface)
+bool isDeviceSuitable (VkPhysicalDevice device, VkSurfaceKHR surface)
 {
     QueueFamilyIndices indices  = findQueueFamilies (device, surface);
     bool               suitable = indices.isComplete ();

@@ -16,8 +16,7 @@ struct QueueFamilyIndices
     }
 };
 
-bool
-isDeviceSuitable (VkPhysicalDevice device, VkSurfaceKHR surface);
+bool isDeviceSuitable (VkPhysicalDevice device, VkSurfaceKHR surface);
 QueueFamilyIndices
 findQueueFamilies (VkPhysicalDevice device, VkSurfaceKHR surface);
 
