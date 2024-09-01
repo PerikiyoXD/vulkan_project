@@ -1,4 +1,5 @@
 #include "VulkanSurface.hpp"
+#include "VulkanLogger.hpp"
 
 void VulkanSurface::create (VkInstance instance, GLFWwindow* window)
 {

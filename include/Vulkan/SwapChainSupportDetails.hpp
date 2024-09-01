@@ -16,4 +16,6 @@ struct SwapChainSupportDetails
     }
 };
 
-#endif
+SwapChainSupportDetails querySwapChainSupport (VkPhysicalDevice device, VkSurfaceKHR surface);
+
+#endif  // SWAP_CHAIN_SUPPORT_DETAILS_HPP

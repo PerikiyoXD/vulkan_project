@@ -1,5 +1,4 @@
 #include "SwapChainSupportDetails.hpp"
-#include <vulkan/vulkan.h>
 
 SwapChainSupportDetails querySwapChainSupport (VkPhysicalDevice device, VkSurfaceKHR surface)
 {

@@ -1,4 +1,5 @@
 #include "VulkanFramebuffers.hpp"
+#include "VulkanLogger.hpp"
 
 void VulkanFramebuffers::create (VulkanDevice& device, VulkanSwapChain& swapChain, VulkanRenderPass& renderPass)
 {

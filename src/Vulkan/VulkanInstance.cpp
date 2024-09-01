@@ -1,4 +1,5 @@
 #include "VulkanInstance.hpp"
+#include "VulkanLogger.hpp"
 
 void VulkanInstance::create ()
 {

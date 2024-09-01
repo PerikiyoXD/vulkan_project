@@ -12,7 +12,7 @@
 class VulkanCommandBuffers
 {
   public:
-    void                          create (VulkanDevice& device, VulkanSwapChain& swapChain, VulkanRenderPass& renderPass, VulkanPipeline& pipeline, VulkanFramebuffers& framebuffers);
+    void                          create (VulkanDevice& device, VulkanSwapChain& swapChain, VulkanRenderPass& renderPass, VulkanPipeline& pipeline, VulkanFramebuffers& framebuffers, VulkanSurface& surface);
     std::vector<VkCommandBuffer>& getCommandBuffers ();
     void                          cleanup (VulkanDevice& device);
 

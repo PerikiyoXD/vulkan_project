@@ -1,5 +1,7 @@
 #include "VulkanSwapChain.hpp"
 #include "SwapChainSupportDetails.hpp"
+#include "VulkanLogger.hpp"
+#include "VulkanUtils.hpp"
 
 void VulkanSwapChain::create (VulkanDevice& device, VulkanSurface& surface)
 {
@@ -117,4 +119,43 @@ void VulkanSwapChain::cleanup (VulkanDevice& device)
         vkDestroyImageView (device.getDevice (), imageView, nullptr);
     }
     vkDestroySwapchainKHR (device.getDevice (), swapChain, nullptr);
+}
+
+VkSurfaceFormatKHR VulkanSwapChain::chooseSwapSurfaceFormat (const std::vector<VkSurfaceFormatKHR>& availableFormats)
+{
+    for (const auto& availableFormat : availableFormats)
+    {
+        if (availableFormat.format == VK_FORMAT_B8G8R8A8_SRGB && availableFormat.colorSpace == VK_COLOR_SPACE_SRGB_NONLINEAR_KHR)
+        {
+            return availableFormat;
+        }
+    }
+    return availableFormats[0];  // Fallback to the first format if the preferred one isn't found
+}
+
+VkPresentModeKHR VulkanSwapChain::chooseSwapPresentMode (const std::vector<VkPresentModeKHR>& availablePresentModes)
+{
+    for (const auto& availablePresentMode : availablePresentModes)
+    {
+        if (availablePresentMode == VK_PRESENT_MODE_MAILBOX_KHR)
+        {
+            return availablePresentMode;
+        }
+    }
+    return VK_PRESENT_MODE_FIFO_KHR;  // FIFO is guaranteed to be available
+}
+
+VkExtent2D VulkanSwapChain::chooseSwapExtent (const VkSurfaceCapabilitiesKHR& capabilities)
+{
+    if (capabilities.currentExtent.width != UINT32_MAX)
+    {
+        return capabilities.currentExtent;
+    }
+    else
+    {
+        VkExtent2D actualExtent = {800, 600};  // Choose your preferred default size here
+        actualExtent.width      = std::max (capabilities.minImageExtent.width, std::min (capabilities.maxImageExtent.width, actualExtent.width));
+        actualExtent.height     = std::max (capabilities.minImageExtent.height, std::min (capabilities.maxImageExtent.height, actualExtent.height));
+        return actualExtent;
+    }
 }

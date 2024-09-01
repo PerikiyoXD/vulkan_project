@@ -2,6 +2,7 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <vector>
 #include "VulkanApp.hpp"
+#include "VulkanLogger.hpp"
 
 class SpinningCircleApp : public VulkanApp
 {

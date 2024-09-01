@@ -12,6 +12,7 @@ class VulkanDevice
     VkDevice         getDevice () const;
     VkPhysicalDevice getPhysicalDevice () const;
     VkQueue          getGraphicsQueue () const;
+    VkQueue          getPresentQueue () const;
 
     void cleanup ();
 
@@ -19,8 +20,10 @@ class VulkanDevice
     VkPhysicalDevice physicalDevice = VK_NULL_HANDLE;
     VkDevice         device;
     VkQueue          graphicsQueue;
+    VkQueue          presentQueue;
 
     bool isDeviceSuitable (VkPhysicalDevice device, VulkanSurface& surface);
+    bool checkDeviceExtensionSupport (VkPhysicalDevice device);
 };
 
 #endif

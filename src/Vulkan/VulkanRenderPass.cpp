@@ -1,4 +1,5 @@
 #include "VulkanRenderPass.hpp"
+#include "VulkanLogger.hpp"
 
 void VulkanRenderPass::create (VulkanDevice& device, VulkanSwapChain& swapChain)
 {

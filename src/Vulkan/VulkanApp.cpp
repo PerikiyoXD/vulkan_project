@@ -51,7 +51,7 @@ void VulkanApp::initVulkan ()
     renderPass.create (device, swapChain);
     pipeline.create (device, swapChain, renderPass);
     framebuffers.create (device, swapChain, renderPass);
-    commandBuffers.create (device, swapChain, renderPass, pipeline, framebuffers);
+    commandBuffers.create (device, swapChain, renderPass, pipeline, framebuffers, surface);
 }
 
 void VulkanApp::drawFrame ()

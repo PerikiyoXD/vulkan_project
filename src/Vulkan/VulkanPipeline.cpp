@@ -1,6 +1,7 @@
 #include "VulkanPipeline.hpp"
 #include <fstream>
 #include <stdexcept>
+#include "VulkanLogger.hpp"
 
 void VulkanPipeline::create (VulkanDevice& device, VulkanSwapChain& swapChain, VulkanRenderPass& renderPass)
 {
