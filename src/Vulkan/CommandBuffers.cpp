@@ -1,16 +1,15 @@
-#include "VulkanCommandBuffers.hpp"
-#include "VulkanLogger.hpp"
-#include "VulkanUtils.hpp"
+#include "CommandBuffers.hpp"
+#include "Logger.hpp"
 
-void VulkanCommandBuffers::create (VulkanDevice& device, VulkanSwapChain& swapChain, VulkanRenderPass& renderPass, VulkanPipeline& pipeline, VulkanFramebuffers& framebuffers, VulkanSurface& surface)
+void Vulkan::CommandBuffers::create (PhysicalDevice& physicalDevice, Device& device, SwapChain& swapChain, RenderPass& renderPass, Pipeline& pipeline, Framebuffers& framebuffers, Surface& surface)
 {
     {
         VkCommandPoolCreateInfo poolInfo{};
         poolInfo.sType             = VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO;
-        QueueFamilyIndices indices = findQueueFamilies (device.getPhysicalDevice (), surface.getSurface ());
+        QueueFamilyIndices indices = physicalDevice.findQueueFamilies (surface.getSurface ());
         if (vkCreateCommandPool (device.getDevice (), &poolInfo, nullptr, &commandPool) != VK_SUCCESS)
         {
-            VulkanLogger::logError ("Failed to create command pool!");
+            Logger::logError ("Failed to create command pool!");
             throw std::runtime_error ("Failed to create command pool!");
         }
 
@@ -24,7 +23,7 @@ void VulkanCommandBuffers::create (VulkanDevice& device, VulkanSwapChain& swapCh
 
         if (vkAllocateCommandBuffers (device.getDevice (), &allocInfo, commandBuffers.data ()) != VK_SUCCESS)
         {
-            VulkanLogger::logError ("Failed to allocate command buffers!");
+            Logger::logError ("Failed to allocate command buffers!");
             throw std::runtime_error ("Failed to allocate command buffers!");
         }
 
@@ -36,7 +35,7 @@ void VulkanCommandBuffers::create (VulkanDevice& device, VulkanSwapChain& swapCh
 
             if (vkBeginCommandBuffer (commandBuffers[i], &beginInfo) != VK_SUCCESS)
             {
-                VulkanLogger::logError ("Failed to begin recording command buffer!");
+                Logger::logError ("Failed to begin recording command buffer!");
                 throw std::runtime_error ("Failed to begin recording command buffer!");
             }
 
@@ -61,21 +60,21 @@ void VulkanCommandBuffers::create (VulkanDevice& device, VulkanSwapChain& swapCh
 
             if (vkEndCommandBuffer (commandBuffers[i]) != VK_SUCCESS)
             {
-                VulkanLogger::logError ("Failed to record command buffer!");
+                Logger::logError ("Failed to record command buffer!");
                 throw std::runtime_error ("Failed to record command buffer!");
             }
         }
 
-        VulkanLogger::log ("Command buffers created successfully.");
+        Logger::log ("Command buffers created successfully.");
     }
 }
 
-std::vector<VkCommandBuffer>& VulkanCommandBuffers::getCommandBuffers ()
+std::vector<VkCommandBuffer>& Vulkan::CommandBuffers::getCommandBuffers ()
 {
     return commandBuffers;
 }
 
-void VulkanCommandBuffers::cleanup (VulkanDevice& device)
+void Vulkan::CommandBuffers::cleanup (Device& device)
 {
     vkDestroyCommandPool (device.getDevice (), commandPool, nullptr);
 }

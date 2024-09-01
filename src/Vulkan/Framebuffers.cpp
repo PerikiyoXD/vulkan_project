@@ -1,7 +1,7 @@
-#include "VulkanFramebuffers.hpp"
-#include "VulkanLogger.hpp"
+#include "Framebuffers.hpp"
+#include "Logger.hpp"
 
-void VulkanFramebuffers::create (VulkanDevice& device, VulkanSwapChain& swapChain, VulkanRenderPass& renderPass)
+void Vulkan::Framebuffers::create (Device& device, SwapChain& swapChain, RenderPass& renderPass)
 {
     swapChainFramebuffers.resize (swapChain.getImageViews ().size ());
 
@@ -21,20 +21,20 @@ void VulkanFramebuffers::create (VulkanDevice& device, VulkanSwapChain& swapChai
 
         if (vkCreateFramebuffer (device.getDevice (), &framebufferInfo, nullptr, &swapChainFramebuffers[i]) != VK_SUCCESS)
         {
-            VulkanLogger::logError ("Failed to create framebuffer!");
+            Logger::logError ("Failed to create framebuffer!");
             exit (EXIT_FAILURE);
         }
     }
 
-    VulkanLogger::log ("Framebuffers created successfully.");
+    Logger::log ("Framebuffers created successfully.");
 }
 
-std::vector<VkFramebuffer>& VulkanFramebuffers::getFramebuffers ()
+std::vector<VkFramebuffer>& Vulkan::Framebuffers::getFramebuffers ()
 {
     return swapChainFramebuffers;
 }
 
-void VulkanFramebuffers::cleanup (VulkanDevice& device)
+void Vulkan::Framebuffers::cleanup (Device& device)
 {
     for (auto framebuffer : swapChainFramebuffers)
     {

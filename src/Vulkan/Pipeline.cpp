@@ -1,9 +1,10 @@
-#include "VulkanPipeline.hpp"
+#include "Pipeline.hpp"
 #include <fstream>
 #include <stdexcept>
-#include "VulkanLogger.hpp"
+#include "Logger.hpp"
 
-void VulkanPipeline::create (VulkanDevice& device, VulkanSwapChain& swapChain, VulkanRenderPass& renderPass)
+
+void Vulkan::Pipeline::create (Device& device, SwapChain& swapChain, RenderPass& renderPass)
 {
     auto vertShaderCode = readFile ("shaders/spinning_circle.vert.spv");
     auto fragShaderCode = readFile ("shaders/spinning_circle.frag.spv");
@@ -87,7 +88,7 @@ void VulkanPipeline::create (VulkanDevice& device, VulkanSwapChain& swapChain, V
 
     if (vkCreatePipelineLayout (device.getDevice (), &pipelineLayoutInfo, nullptr, &pipelineLayout) != VK_SUCCESS)
     {
-        VulkanLogger::logError ("Failed to create pipeline layout!");
+        Logger::logError ("Failed to create pipeline layout!");
         exit (EXIT_FAILURE);
     }
 
@@ -108,33 +109,33 @@ void VulkanPipeline::create (VulkanDevice& device, VulkanSwapChain& swapChain, V
 
     if (vkCreateGraphicsPipelines (device.getDevice (), VK_NULL_HANDLE, 1, &pipelineInfo, nullptr, &graphicsPipeline) != VK_SUCCESS)
     {
-        VulkanLogger::logError ("Failed to create graphics pipeline!");
+        Logger::logError ("Failed to create graphics pipeline!");
         exit (EXIT_FAILURE);
     }
 
-    VulkanLogger::log ("Graphics pipeline created successfully.");
+    Logger::log ("Graphics pipeline created successfully.");
 
     vkDestroyShaderModule (device.getDevice (), vertShaderModule, nullptr);
     vkDestroyShaderModule (device.getDevice (), fragShaderModule, nullptr);
 }
 
-VkPipeline VulkanPipeline::getPipeline () const
+VkPipeline Vulkan::Pipeline::getPipeline () const
 {
     return graphicsPipeline;
 }
 
-VkPipelineLayout VulkanPipeline::getPipelineLayout () const
+VkPipelineLayout Vulkan::Pipeline::getPipelineLayout () const
 {
     return pipelineLayout;
 }
 
-void VulkanPipeline::cleanup (VulkanDevice& device)
+void Vulkan::Pipeline::cleanup (Device& device)
 {
     vkDestroyPipeline (device.getDevice (), graphicsPipeline, nullptr);
     vkDestroyPipelineLayout (device.getDevice (), pipelineLayout, nullptr);
 }
 
-VkShaderModule VulkanPipeline::createShaderModule (const std::vector<char>& code, VulkanDevice& device)
+VkShaderModule Vulkan::Pipeline::createShaderModule (const std::vector<char>& code, Device& device)
 {
     VkShaderModuleCreateInfo createInfo{};
     createInfo.sType    = VK_STRUCTURE_TYPE_SHADER_MODULE_CREATE_INFO;
@@ -144,14 +145,14 @@ VkShaderModule VulkanPipeline::createShaderModule (const std::vector<char>& code
     VkShaderModule shaderModule;
     if (vkCreateShaderModule (device.getDevice (), &createInfo, nullptr, &shaderModule) != VK_SUCCESS)
     {
-        VulkanLogger::logError ("Failed to create shader module!");
+        Logger::logError ("Failed to create shader module!");
         exit (EXIT_FAILURE);
     }
 
     return shaderModule;
 }
 
-std::vector<char> VulkanPipeline::readFile (const std::string& filename)
+std::vector<char> Vulkan::Pipeline::readFile (const std::string& filename)
 {
     std::ifstream file (filename, std::ios::ate | std::ios::binary);
 

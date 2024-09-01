@@ -1,21 +1,17 @@
-#ifndef SWAP_CHAIN_SUPPORT_DETAILS_HPP
-#define SWAP_CHAIN_SUPPORT_DETAILS_HPP
+#ifndef SWAPCHAIN_SUPPORT_DETAILS_HPP
+#define SWAPCHAIN_SUPPORT_DETAILS_HPP
 
 #include <vector>
 #include <vulkan/vulkan.h>
 
-struct SwapChainSupportDetails
+namespace Vulkan
 {
-    VkSurfaceCapabilitiesKHR        capabilities;
-    std::vector<VkSurfaceFormatKHR> formats;
-    std::vector<VkPresentModeKHR>   presentModes;
-
-    bool isAdequate () const
+    struct SwapChainSupportDetails
     {
-        return !formats.empty () && !presentModes.empty ();
-    }
-};
+        VkSurfaceCapabilitiesKHR        capabilities;
+        std::vector<VkSurfaceFormatKHR> formats;
+        std::vector<VkPresentModeKHR>   presentModes;
+    };
+}  // namespace Vulkan
 
-SwapChainSupportDetails querySwapChainSupport (VkPhysicalDevice device, VkSurfaceKHR surface);
-
-#endif  // SWAP_CHAIN_SUPPORT_DETAILS_HPP
+#endif  // SWAPCHAIN_SUPPORT_DETAILS_HPP

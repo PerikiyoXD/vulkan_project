@@ -1,10 +1,10 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <vector>
-#include "VulkanApp.hpp"
-#include "VulkanLogger.hpp"
+#include "App.hpp"
+#include "Logger.hpp"
 
-class SpinningCircleApp : public VulkanApp
+class SpinningCircleApp : public Vulkan::App
 {
   public:
     void
@@ -59,8 +59,8 @@ class SpinningCircleApp : public VulkanApp
         // Update the uniform buffer with the new rotation angle
         updateUniformBuffer (rotationAngle);
 
-        // Call the base VulkanApp drawFrame to handle rendering and presentation
-        VulkanApp::drawFrame ();
+        // Call the base App drawFrame to handle rendering and presentation
+        App::drawFrame ();
     }
 
   protected:
@@ -81,7 +81,7 @@ int main ()
     }
     catch (const std::exception& e)
     {
-        VulkanLogger::logError ("Application error: " + std::string (e.what ()));
+        Vulkan::Logger::logError ("Application error: " + std::string (e.what ()));
         return EXIT_FAILURE;
     }
 

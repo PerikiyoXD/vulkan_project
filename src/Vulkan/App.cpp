@@ -1,9 +1,10 @@
-#include "VulkanApp.hpp"
+#include "App.hpp"
 #include <stdexcept>
 #include <vector>
-#include "VulkanLogger.hpp"
+#include "Logger.hpp"
+#include "PhysicalDevice.hpp"
 
-void VulkanApp::run ()
+void Vulkan::App::run ()
 {
     initWindow ();
     initVulkan ();
@@ -21,11 +22,11 @@ void VulkanApp::run ()
     cleanup ();
 }
 
-void VulkanApp::initWindow ()
+void Vulkan::App::initWindow ()
 {
     if (!glfwInit ())
     {
-        VulkanLogger::logError ("Failed to initialize GLFW!");
+        Logger::logError ("Failed to initialize GLFW!");
         throw std::runtime_error ("Failed to initialize GLFW!");
     }
 
@@ -33,28 +34,28 @@ void VulkanApp::initWindow ()
     window = glfwCreateWindow (800, 600, "Vulkan Window", nullptr, nullptr);
     if (!window)
     {
-        VulkanLogger::logError ("Failed to create GLFW window!");
+        Logger::logError ("Failed to create GLFW window!");
         glfwTerminate ();
         throw std::runtime_error ("Failed to create GLFW window!");
     }
 
-    VulkanLogger::log ("GLFW window created successfully.");
+    Logger::log ("GLFW window created successfully.");
 }
 
-void VulkanApp::initVulkan ()
+void Vulkan::App::initVulkan ()
 {
     instance.create ();
     surface.create (instance.getInstance (), window);
-    device.pickPhysicalDevice (instance.getInstance (), surface);
-    device.createLogicalDevice (surface);
-    swapChain.create (device, surface);
+    physicalDevice.pickPhysicalDevice (instance.getInstance (), surface.getSurface ());
+    device.createLogicalDevice (physicalDevice, surface.getSurface ());
+    swapChain.create (physicalDevice, device, surface);
     renderPass.create (device, swapChain);
     pipeline.create (device, swapChain, renderPass);
     framebuffers.create (device, swapChain, renderPass);
-    commandBuffers.create (device, swapChain, renderPass, pipeline, framebuffers, surface);
+    commandBuffers.create (physicalDevice, device, swapChain, renderPass, pipeline, framebuffers, surface);
 }
 
-void VulkanApp::drawFrame ()
+void Vulkan::App::drawFrame ()
 {
     vkWaitForFences (device.getDevice (), 1, &inFlightFences[currentFrame], VK_TRUE, UINT64_MAX);
     vkResetFences (device.getDevice (), 1, &inFlightFences[currentFrame]);
@@ -64,7 +65,7 @@ void VulkanApp::drawFrame ()
 
     if (result == VK_ERROR_OUT_OF_DATE_KHR)
     {
-        VulkanLogger::log ("Swap chain out of date, rebuilding...");
+        Logger::log ("Swap chain out of date, rebuilding...");
         // Handle swap chain recreation here (not implemented in this base class)
     }
     else if (result != VK_SUCCESS && result != VK_SUBOPTIMAL_KHR)
@@ -108,7 +109,7 @@ void VulkanApp::drawFrame ()
 
     if (result == VK_ERROR_OUT_OF_DATE_KHR || result == VK_SUBOPTIMAL_KHR || glfwWindowShouldClose (window))
     {
-        VulkanLogger::log ("Swap chain out of date or suboptimal, rebuilding...");
+        Logger::log ("Swap chain out of date or suboptimal, rebuilding...");
         // Handle swap chain recreation here (not implemented in this base class)
     }
     else if (result != VK_SUCCESS)
@@ -119,7 +120,7 @@ void VulkanApp::drawFrame ()
     currentFrame = (currentFrame + 1) % MAX_FRAMES_IN_FLIGHT;
 }
 
-void VulkanApp::createSyncObjects ()
+void Vulkan::App::createSyncObjects ()
 {
     imageAvailableSemaphores.resize (MAX_FRAMES_IN_FLIGHT);
     renderFinishedSemaphores.resize (MAX_FRAMES_IN_FLIGHT);
@@ -141,7 +142,7 @@ void VulkanApp::createSyncObjects ()
     }
 }
 
-void VulkanApp::cleanupSyncObjects ()
+void Vulkan::App::cleanupSyncObjects ()
 {
     for (size_t i = 0; i < MAX_FRAMES_IN_FLIGHT; i++)
     {
@@ -151,7 +152,7 @@ void VulkanApp::cleanupSyncObjects ()
     }
 }
 
-void VulkanApp::cleanup ()
+void Vulkan::App::cleanup ()
 {
     cleanupSyncObjects ();
 

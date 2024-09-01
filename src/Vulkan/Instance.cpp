@@ -1,6 +1,7 @@
-#include "VulkanInstance.hpp"
+#include "Instance.hpp"
 #include <vector>
-#include "VulkanLogger.hpp"
+#include "Logger.hpp"
+
 
 // Define the validation layers you want to use
 const std::vector<const char*> validationLayers = {
@@ -37,7 +38,7 @@ bool checkValidationLayerSupport ()
     return true;
 }
 
-void VulkanInstance::create ()
+void Vulkan::Instance::create ()
 {
     // Setup application info
     VkApplicationInfo appInfo{};
@@ -77,18 +78,18 @@ void VulkanInstance::create ()
     VkResult result = vkCreateInstance (&createInfo, nullptr, &instance);
     if (result != VK_SUCCESS)
     {
-        VulkanLogger::logError ("Failed to create Vulkan instance!", result);
+        Logger::logError ("Failed to create Vulkan instance!", result);
         exit (EXIT_FAILURE);
     }
-    VulkanLogger::log ("Vulkan instance created successfully.");
+    Logger::log ("Vulkan instance created successfully.");
 }
 
-VkInstance VulkanInstance::getInstance () const
+VkInstance Vulkan::Instance::getInstance () const
 {
     return instance;
 }
 
-void VulkanInstance::cleanup ()
+void Vulkan::Instance::cleanup ()
 {
     vkDestroyInstance (instance, nullptr);
 }

@@ -1,7 +1,7 @@
-#include "VulkanRenderPass.hpp"
-#include "VulkanLogger.hpp"
+#include "RenderPass.hpp"
+#include "Logger.hpp"
 
-void VulkanRenderPass::create (VulkanDevice& device, VulkanSwapChain& swapChain)
+void Vulkan::RenderPass::create (Device& device, SwapChain& swapChain)
 {
     VkAttachmentDescription colorAttachment{};
     colorAttachment.format         = swapChain.getImageFormat ();
@@ -32,19 +32,19 @@ void VulkanRenderPass::create (VulkanDevice& device, VulkanSwapChain& swapChain)
     VkResult result = vkCreateRenderPass (device.getDevice (), &renderPassInfo, nullptr, &renderPass);
     if (result != VK_SUCCESS)
     {
-        VulkanLogger::logError ("Failed to create render pass!", result);
+        Logger::logError ("Failed to create render pass!", result);
         exit (EXIT_FAILURE);
     }
 
-    VulkanLogger::log ("Render pass created successfully.");
+    Logger::log ("Render pass created successfully.");
 }
 
-VkRenderPass VulkanRenderPass::getRenderPass () const
+VkRenderPass Vulkan::RenderPass::getRenderPass () const
 {
     return renderPass;
 }
 
-void VulkanRenderPass::cleanup (VulkanDevice& device)
+void Vulkan::RenderPass::cleanup (Device& device)
 {
     vkDestroyRenderPass (device.getDevice (), renderPass, nullptr);
 }

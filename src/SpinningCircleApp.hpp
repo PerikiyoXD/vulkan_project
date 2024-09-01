@@ -4,9 +4,9 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <vector>
-#include "VulkanApp.hpp"
+#include "App.hpp"
 
-class SpinningCircleApp : public VulkanApp
+class SpinningCircleApp : public App
 {
   public:
     void initVertexData () override;
