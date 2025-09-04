@@ -8,16 +8,16 @@
 
 namespace Vulkan
 {
-    class Surface
-    {
-      public:
-        void         create (VkInstance instance, GLFWwindow* window);
-        VkSurfaceKHR getSurface () const;
-        void         cleanup (VkInstance instance);
+class Surface
+{
+  public:
+    void create(VkInstance instance, GLFWwindow *window);
+    VkSurfaceKHR getSurface() const;
+    void cleanup(VkInstance instance);
 
-      private:
-        VkSurfaceKHR surface;
-    };
-}  // namespace Vulkan
+  private:
+    VkSurfaceKHR surface;
+};
+} // namespace Vulkan
 
-#endif  // VULKAN_SURFACE_HPP
+#endif // VULKAN_SURFACE_HPP

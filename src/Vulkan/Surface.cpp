@@ -1,23 +1,21 @@
-#include "Surface.hpp"
-#include "Logger.hpp"
+#include "Vulkan/Surface.hpp"
+#include "Vulkan/Logger.hpp"
 
-void Vulkan::Surface::create (VkInstance instance, GLFWwindow* window)
+void Vulkan::Surface::create(VkInstance instance, GLFWwindow *window)
 {
-    VkResult result = glfwCreateWindowSurface (instance, window, nullptr, &surface);
+    VkResult result =
+        glfwCreateWindowSurface(instance, window, nullptr, &surface);
     if (result != VK_SUCCESS)
     {
-        Logger::logError ("Failed to create window surface!", result);
-        exit (EXIT_FAILURE);
+        Logger::logError("Failed to create window surface!", result);
+        exit(EXIT_FAILURE);
     }
-    Logger::log ("Vulkan surface created successfully.");
+    Logger::log("Vulkan surface created successfully.");
 }
 
-VkSurfaceKHR Vulkan::Surface::getSurface () const
-{
-    return surface;
-}
+VkSurfaceKHR Vulkan::Surface::getSurface() const { return surface; }
 
-void Vulkan::Surface::cleanup (VkInstance instance)
+void Vulkan::Surface::cleanup(VkInstance instance)
 {
-    vkDestroySurfaceKHR (instance, surface, nullptr);
+    vkDestroySurfaceKHR(instance, surface, nullptr);
 }

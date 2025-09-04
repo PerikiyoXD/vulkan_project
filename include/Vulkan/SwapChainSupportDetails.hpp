@@ -6,12 +6,12 @@
 
 namespace Vulkan
 {
-    struct SwapChainSupportDetails
-    {
-        VkSurfaceCapabilitiesKHR        capabilities;
-        std::vector<VkSurfaceFormatKHR> formats;
-        std::vector<VkPresentModeKHR>   presentModes;
-    };
-}  // namespace Vulkan
+struct SwapChainSupportDetails
+{
+    VkSurfaceCapabilitiesKHR capabilities;
+    std::vector<VkSurfaceFormatKHR> formats;
+    std::vector<VkPresentModeKHR> presentModes;
+};
+} // namespace Vulkan
 
-#endif  // SWAPCHAIN_SUPPORT_DETAILS_HPP
+#endif // SWAPCHAIN_SUPPORT_DETAILS_HPP

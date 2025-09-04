@@ -7,17 +7,17 @@
 
 namespace Vulkan
 {
-    class Instance
-    {
-      public:
-        void       create ();
-        VkInstance getInstance () const;
+class Instance
+{
+  public:
+    void create();
+    VkInstance getInstance() const;
 
-        void cleanup ();
+    void cleanup();
 
-      private:
-        VkInstance instance;
-    };
-}  // namespace Vulkan
+  private:
+    VkInstance instance;
+};
+} // namespace Vulkan
 
-#endif  // VULKAN_INSTANCE_HPP
+#endif // VULKAN_INSTANCE_HPP

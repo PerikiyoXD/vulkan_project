@@ -6,16 +6,16 @@
 
 namespace Vulkan
 {
-    struct QueueFamilyIndices
+struct QueueFamilyIndices
+{
+    std::optional<uint32_t> graphicsFamily;
+    std::optional<uint32_t> presentFamily;
+
+    bool isComplete() const
     {
-        std::optional<uint32_t> graphicsFamily;
-        std::optional<uint32_t> presentFamily;
+        return graphicsFamily.has_value() && presentFamily.has_value();
+    }
+};
+} // namespace Vulkan
 
-        bool isComplete () const
-        {
-            return graphicsFamily.has_value () && presentFamily.has_value ();
-        }
-    };
-}  // namespace Vulkan
-
-#endif  // VULKAN_QUEUE_FAMILY_INDICES_HPP
+#endif // VULKAN_QUEUE_FAMILY_INDICES_HPP
