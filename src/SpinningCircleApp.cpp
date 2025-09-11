@@ -1,6 +1,7 @@
 #include "SpinningCircleApp.hpp"
 #include "Vulkan/Logger.hpp"
 #include "Vulkan/QueueFamilyIndices.hpp"
+#include <chrono>
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <vector>
@@ -19,18 +20,95 @@ void SpinningCircleApp::initVertexData()
 
     Vulkan::Logger::log("Circle vertices generated: " + std::to_string(circleVertices.size()));
     createVertexBuffer();
-    Vulkan::Logger::log("Vertex buffer created successfully");
+    recordCommandBuffers();
+    Vulkan::Logger::log("Vertex buffer created and command buffers recorded successfully");
 }
 
 void SpinningCircleApp::drawFrame()
 {
-    static int frameCount = 0;
-    Vulkan::Logger::log("Drawing frame: " + std::to_string(++frameCount));
+    // Update time for rotation
+    static auto startTime = std::chrono::high_resolution_clock::now();
+    auto currentTimePoint = std::chrono::high_resolution_clock::now();
+    float time = std::chrono::duration<float, std::chrono::seconds::period>(currentTimePoint - startTime).count();
 
-    // For now, just call base drawFrame
+    Vulkan::Logger::log("Drawing frame with rotation angle: " + std::to_string(time));
+
+    // Update vertex positions for rotation
+    updateVertexBuffer(time);
+
+    // Call base drawFrame for rendering
     Vulkan::App::drawFrame();
 
-    Vulkan::Logger::log("Frame " + std::to_string(frameCount) + " completed.");
+    Vulkan::Logger::log("Frame rendered successfully.");
+}
+
+void SpinningCircleApp::updateVertexBuffer(float time)
+{
+    // Generate rotated circle vertices
+    const int numSegments = 64;
+    const float radius = 0.5f;
+    std::vector<glm::vec2> rotatedVertices;
+    
+    for (int i = 0; i < numSegments; ++i)
+    {
+        float angle = 2.0f * 3.14159f * i / numSegments + time; // Add rotation
+        rotatedVertices.push_back(glm::vec2(radius * cos(angle), radius * sin(angle)));
+    }
+
+    // Update the vertex buffer
+    VkDeviceSize bufferSize = sizeof(rotatedVertices[0]) * rotatedVertices.size();
+    void* data;
+    VkResult result = vkMapMemory(device.getDevice(), vertexBufferMemory, 0, bufferSize, 0, &data);
+    if (result != VK_SUCCESS) {
+        Vulkan::Logger::logError("Failed to map vertex buffer memory for update", result);
+        throw std::runtime_error("Failed to map vertex buffer memory for update!");
+    }
+
+    memcpy(data, rotatedVertices.data(), (size_t)bufferSize);
+    vkUnmapMemory(device.getDevice(), vertexBufferMemory);
+}
+
+void SpinningCircleApp::recordCommandBuffers()
+{
+    for (size_t i = 0; i < commandBuffers.getCommandBuffers().size(); i++) {
+        VkCommandBufferBeginInfo beginInfo{};
+        beginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
+        beginInfo.flags = VK_COMMAND_BUFFER_USAGE_SIMULTANEOUS_USE_BIT;
+
+        if (vkBeginCommandBuffer(commandBuffers.getCommandBuffers()[i], &beginInfo) != VK_SUCCESS) {
+            Vulkan::Logger::logError("Failed to begin recording command buffer!");
+            throw std::runtime_error("Failed to begin recording command buffer!");
+        }
+
+        VkRenderPassBeginInfo renderPassInfo{};
+        renderPassInfo.sType = VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO;
+        renderPassInfo.renderPass = renderPass.getRenderPass();
+        renderPassInfo.framebuffer = framebuffers.getFramebuffers()[i];
+        renderPassInfo.renderArea.offset = {0, 0};
+        renderPassInfo.renderArea.extent = swapChain.getExtent();
+
+        VkClearValue clearColor = {0.0f, 0.0f, 0.0f, 1.0f};
+        renderPassInfo.clearValueCount = 1;
+        renderPassInfo.pClearValues = &clearColor;
+
+        vkCmdBeginRenderPass(commandBuffers.getCommandBuffers()[i], &renderPassInfo, VK_SUBPASS_CONTENTS_INLINE);
+
+        vkCmdBindPipeline(commandBuffers.getCommandBuffers()[i], VK_PIPELINE_BIND_POINT_GRAPHICS, pipeline.getPipeline());
+
+        VkBuffer vertexBuffers[] = {vertexBuffer};
+        VkDeviceSize offsets[] = {0};
+        vkCmdBindVertexBuffers(commandBuffers.getCommandBuffers()[i], 0, 1, vertexBuffers, offsets);
+
+        vkCmdDraw(commandBuffers.getCommandBuffers()[i], static_cast<uint32_t>(circleVertices.size()), 1, 0, 0);
+
+        vkCmdEndRenderPass(commandBuffers.getCommandBuffers()[i]);
+
+        if (vkEndCommandBuffer(commandBuffers.getCommandBuffers()[i]) != VK_SUCCESS) {
+            Vulkan::Logger::logError("Failed to record command buffer!");
+            throw std::runtime_error("Failed to record command buffer!");
+        }
+    }
+    Vulkan::Logger::log("Command buffers recorded for spinning circle.");
 }
 
 void SpinningCircleApp::createVertexBuffer()
@@ -48,6 +126,7 @@ void SpinningCircleApp::createVertexBuffer()
         Vulkan::Logger::logError("Failed to map vertex buffer memory", result);
         throw std::runtime_error("Failed to map vertex buffer memory!");
     }
+
     memcpy(data, circleVertices.data(), (size_t)bufferSize);
     vkUnmapMemory(device.getDevice(), vertexBufferMemory);
 

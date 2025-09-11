@@ -37,6 +37,7 @@ void Vulkan::CommandBuffers::create(PhysicalDevice &physicalDevice,
             throw std::runtime_error("Failed to allocate command buffers!");
         }
 
+        // For now, record basic command buffers - SpinningCircleApp will override this
         for (size_t i = 0; i < commandBuffers.size(); i++)
         {
             VkCommandBufferBeginInfo beginInfo{};

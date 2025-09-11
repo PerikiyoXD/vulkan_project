@@ -15,6 +15,8 @@ class SpinningCircleApp : public Vulkan::App
     void cleanup();
 
   private:
+    void recordCommandBuffers();
+    void updateVertexBuffer(float time);
     void createVertexBuffer();
     void createBuffer(VkDeviceSize size, VkBufferUsageFlags usage, VkMemoryPropertyFlags properties, VkBuffer& buffer, VkDeviceMemory& bufferMemory);
     uint32_t findMemoryType(uint32_t typeFilter, VkMemoryPropertyFlags properties);
